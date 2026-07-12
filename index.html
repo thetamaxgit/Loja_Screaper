@@ -1,0 +1,741 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ThetaMax Lead Scraper - Automatize sua Prospecção B2B</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Inter:wght@300;400;600;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- FontAwesome para Ícones -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
+    <!-- Swiper CSS -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css"
+    />
+    <link rel="shortcut icon" href="../logoThetamax_semFundo.png" type="image/x-icon">
+    <style>
+      :root {
+        --bg-dark: #070f1e;
+        --bg-card: #0d1b32;
+        --primary: #34a5d9; /* Cor Cyan oficial do ThetaMax */
+        --primary-hover: #5ec2f2;
+        --text-main: #ffffff;
+        --text-muted: #94a3b8;
+        --accent: #0d3156; /* Cor Dark Blue oficial do ThetaMax */
+        --font-main: "Inter", sans-serif;
+        --font-code: "Fira Code", monospace;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        scroll-behavior: smooth;
+      }
+
+      body {
+        font-family: var(--font-main);
+        background-color: var(--bg-dark);
+        color: var(--text-main);
+        overflow-x: hidden;
+      }
+
+      /* Particles Background Container */
+      #canvas-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+        pointer-events: none;
+      }
+
+      /* Navbar */
+      header {
+        position: fixed;
+        top: 0;
+        width: 100%;
+        padding: 20px 5%;
+        background: rgba(7, 15, 30, 0.8);
+        backdrop-filter: blur(12px);
+        z-index: 1000;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      }
+
+      .logo {
+        font-family: var(--font-code);
+        font-weight: 600;
+        font-size: 1.4rem;
+        color: var(--text-main);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .logo span {
+        color: var(--primary);
+      }
+
+      .nav-links {
+        display: flex;
+        list-style: none;
+        gap: 30px;
+      }
+
+      .nav-links a {
+        color: var(--text-muted);
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.3s;
+      }
+
+      .nav-links a:hover {
+        color: var(--primary);
+      }
+
+      .btn-header {
+        background: transparent;
+        border: 2px solid var(--primary);
+        color: var(--primary);
+        padding: 8px 20px;
+        border-radius: 6px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+      }
+
+      .btn-header:hover {
+        background: var(--primary);
+        color: var(--bg-dark);
+        box-shadow: 0 0 15px rgba(52, 165, 217, 0.4);
+      }
+
+      /* Hero Section */
+      .hero {
+        min-height: 100vh;
+        padding: 140px 5% 60px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        align-items: center;
+        gap: 50px;
+        max-width: 1400px;
+        margin: 0 auto;
+      }
+
+      .hero-content h1 {
+        font-size: 3.5rem;
+        line-height: 1.1;
+        font-weight: 800;
+        margin-bottom: 20px;
+      }
+
+      .hero-content h1 span {
+        background: linear-gradient(45deg, var(--primary), #90e0ef);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      .hero-content p {
+        font-size: 1.15rem;
+        color: var(--text-muted);
+        line-height: 1.6;
+        margin-bottom: 35px;
+      }
+
+      .hero-cta {
+        display: flex;
+        gap: 20px;
+        flex-wrap: wrap;
+      }
+
+      .btn-primary {
+        background: var(--primary);
+        color: var(--bg-dark);
+        padding: 15px 35px;
+        border-radius: 8px;
+        font-size: 1.1rem;
+        font-weight: 700;
+        text-decoration: none;
+        transition: all 0.3s;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        border: none;
+        cursor: pointer;
+      }
+
+      .btn-primary:hover {
+        background: var(--primary-hover);
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(52, 165, 217, 0.3);
+        color: var(--bg-dark);
+      }
+
+      .btn-secondary {
+        background: rgba(255, 255, 255, 0.05);
+        color: var(--text-main);
+        padding: 15px 35px;
+        border-radius: 8px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .btn-secondary:hover {
+        background: rgba(255, 255, 255, 0.1);
+        border-color: var(--primary);
+      }
+
+      /* Product Image Wrapper */
+      .hero-image-wrapper {
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .image-bg-glow {
+        position: absolute;
+        width: 80%;
+        height: 80%;
+        background: radial-gradient(
+          circle,
+          rgba(52, 165, 217, 0.2) 0%,
+          transparent 70%
+        );
+        z-index: 1;
+        filter: blur(30px);
+      }
+
+      .product-img {
+        width: 100%;
+        max-width: 550px;
+        height: auto;
+        border-radius: 12px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+        position: relative;
+        z-index: 2;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        transition: transform 0.5s ease;
+      }
+
+      /* Features Section */
+      .features {
+        padding: 100px 5%;
+        max-width: 1400px;
+        margin: 0 auto;
+      }
+
+      .section-title {
+        text-align: center;
+        font-size: 2.5rem;
+        margin-bottom: 60px;
+        font-weight: 800;
+      }
+
+      .section-title span {
+        color: var(--primary);
+      }
+
+      .grid-features {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 30px;
+      }
+
+      .feature-card {
+        background: var(--bg-card);
+        padding: 40px 30px;
+        border-radius: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.03);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .feature-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 3px;
+        background: linear-gradient(90deg, var(--primary), #90e0ef);
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform 0.3s ease;
+      }
+
+      .feature-card:hover::before {
+        transform: scaleX(1);
+      }
+
+      .feature-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+        border-color: rgba(52, 165, 217, 0.2);
+      }
+
+      .feature-icon {
+        font-size: 2.5rem;
+        color: var(--primary);
+        margin-bottom: 20px;
+      }
+
+      .feature-card h3 {
+        font-size: 1.4rem;
+        margin-bottom: 15px;
+        font-weight: 600;
+      }
+
+      .feature-card p {
+        color: var(--text-muted);
+        line-height: 1.6;
+      }
+
+      /* Testimonials Slider */
+      .slider-section {
+        padding: 100px 5%;
+        background: rgba(13, 27, 50, 0.4);
+      }
+
+      .swiper {
+        width: 100%;
+        max-width: 900px;
+        padding: 50px 0;
+      }
+
+      .swiper-slide {
+        background: var(--bg-card);
+        padding: 40px;
+        border-radius: 16px;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        text-align: center;
+      }
+
+      .slide-quote {
+        font-size: 1.2rem;
+        line-height: 1.7;
+        margin-bottom: 25px;
+        font-style: italic;
+      }
+
+      .slide-author {
+        font-weight: 600;
+        color: var(--primary);
+        font-family: var(--font-code);
+      }
+
+      /* Pricing Section */
+      .pricing {
+        padding: 100px 5%;
+        max-width: 1200px;
+        margin: 0 auto;
+        text-align: center;
+      }
+
+      .pricing-box {
+        background: linear-gradient(135deg, #0d1b32 0%, #070f1e 100%);
+        max-width: 550px;
+        margin: 0 auto;
+        padding: 60px 40px;
+        border-radius: 20px;
+        border: 2px solid var(--primary);
+        box-shadow: 0 20px 50px rgba(52, 165, 217, 0.15);
+        position: relative;
+      }
+
+      .pricing-tag {
+        position: absolute;
+        top: -15px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: var(--primary);
+        color: var(--bg-dark);
+        padding: 5px 20px;
+        font-weight: 700;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+
+      .price {
+        font-size: 4rem;
+        font-weight: 800;
+        margin: 20px 0;
+        color: var(--text-main);
+      }
+
+      .price span {
+        font-size: 1.5rem;
+        color: var(--text-muted);
+        font-weight: 400;
+      }
+
+      .pricing-features {
+        list-style: none;
+        margin: 30px 0 40px;
+        text-align: left;
+        display: inline-block;
+      }
+
+      .pricing-features li {
+        margin-bottom: 15px;
+        font-size: 1.1rem;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+      }
+
+      .pricing-features li i {
+        color: var(--primary);
+      }
+
+      /* Footer */
+      footer {
+        padding: 50px 5%;
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+        text-align: center;
+        color: var(--text-muted);
+        font-size: 0.9rem;
+      }
+
+      /* Responsive Design */
+      @media (max-width: 968px) {
+        .hero {
+          grid-template-columns: 1fr;
+          text-align: center;
+          padding-top: 120px;
+        }
+        .hero-content h1 {
+          font-size: 2.5rem;
+        }
+        .hero-cta {
+          justify-content: center;
+        }
+        .nav-links {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Background Canvas -->
+    <div id="canvas-container"></div>
+
+    <!-- Header / Navbar -->
+    <header>
+      <div class="logo">
+        <i class="fa-solid fa-location-dot"></i> THETA<span>MAX</span>
+      </div>
+      <ul class="nav-links">
+        <li><a href="#features">Recursos</a></li>
+        <li><a href="#reviews">Depoimentos</a></li>
+        <li><a href="#pricing">Licenças</a></li>
+      </ul>
+      <a href="#pricing" class="btn-header">Adquirir Scraper</a>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero" id="hero">
+      <div class="hero-content">
+        <h1>Extraia Leads do Google Maps com <span>Alta Performance</span></h1>
+        <p>
+          O ThetaMax Lead Scraper é a solução definitiva para minerar e
+          estruturar dados comerciais em tempo real. Capture contatos, e-mails e
+          redes sociais de empresas de forma automatizada e gere planilhas
+          prontas para o seu comercial.
+        </p>
+        <div class="hero-cta">
+          <a href="#pricing" class="btn-primary"
+            >Garantir Acesso Imediato <i class="fa-solid fa-arrow-right"></i
+          ></a>
+          <a href="#features" class="btn-secondary">Conhecer Funcionalidades</a>
+        </div>
+      </div>
+      <div class="hero-image-wrapper">
+        <div class="image-bg-glow"></div>
+        <!-- Insira aqui o link do print/mockup do seu software rodando -->
+        <img
+          src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=1000&auto=format&fit=crop"
+          alt="Interface do ThetaMax Lead Scraper"
+          class="product-img"
+          id="product-hero-img"
+        />
+      </div>
+    </section>
+
+    <!-- Grid de Recursos -->
+    <section class="features" id="features">
+      <h2 class="section-title">Minerador Comercial <span>Avançado</span></h2>
+      <div class="grid-features">
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i class="fa-solid fa-magnifying-glass-location"></i>
+          </div>
+          <h3>Mapeamento Dinâmico</h3>
+          <p>
+            Varredura inteligente que extrai automaticamente Razão Social,
+            Endereço, Telefone, Site e Avaliações direto do Google Maps.
+          </p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i class="fa-solid fa-envelope-open-text"></i>
+          </div>
+          <h3>Enriquecimento Digital</h3>
+          <p>
+            O robô visita o site externo das empresas mapeadas aplicando análise
+            algorítmica para isolar e-mails e links de Instagram, Facebook e
+            LinkedIn.
+          </p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon"><i class="fa-solid fa-eye-slash"></i></div>
+          <h3>Modo Oculto (Headless)</h3>
+          <p>
+            Opção para executar os navegadores em segundo plano, eliminando o
+            consumo visual e otimizando o desempenho de hardware do seu PC.
+          </p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon"><i class="fa-solid fa-file-excel"></i></div>
+          <h3>Relatórios Prontos</h3>
+          <p>
+            Gera arquivos Excel (.xlsx) e CSV estruturados nativamente no
+            formato UTF-8-SIG para compatibilidade perfeita de caracteres no
+            Microsoft Excel.
+          </p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i class="fa-solid fa-window-restore"></i>
+          </div>
+          <h3>Interface Custom-GUI</h3>
+          <p>
+            Interface gráfica intuitiva baseada em CustomTkinter para controle
+            total da operação sem precisar digitar uma única linha de comando.
+          </p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon"><i class="fa-solid fa-cubes"></i></div>
+          <h3>Multi-Navegadores</h3>
+          <p>
+            Arquitetura robusta com suporte nativo e gerenciamento automatizado
+            de drivers para o Google Chrome, Microsoft Edge e Mozilla Firefox.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slider Section -->
+    <section class="slider-section" id="reviews">
+      <h2 class="section-title">O que dizem os <span>Operadores</span></h2>
+      <div class="swiper mySwiper">
+        <div class="swiper-wrapper">
+          <div class="swiper-slide">
+            <p class="slide-quote">
+              "A função de buscar as redes sociais diretamente no domínio das
+              empresas poupou todo o nosso tempo de qualificação de leads B2B."
+            </p>
+            <div class="slide-author">@gestor_comercial</div>
+          </div>
+          <div class="swiper-slide">
+            <p class="slide-quote">
+              "O relatório gerado em HTML para salvar em PDF e as planilhas
+              prontas limpas facilitaram demais a integração com nosso CRM."
+            </p>
+            <div class="slide-author">@operador_leads</div>
+          </div>
+          <div class="swiper-slide">
+            <p class="slide-quote">
+              "Rodar o scraper em modo headless permitiu extrair mais de 500
+              estabelecimentos em segundo plano sem travar meu fluxo de trabalho
+              diário."
+            </p>
+            <div class="slide-author">@prospector_expert</div>
+          </div>
+        </div>
+        <div class="swiper-pagination"></div>
+      </div>
+    </section>
+
+    <!-- Oferta / Checkout Section -->
+    <section class="pricing" id="pricing">
+      <div class="pricing-box">
+        <div class="pricing-tag">Versão Comercial v2.2</div>
+        <h3>Acesso Vitalício</h3>
+        <p style="color: var(--text-muted); margin-top: 10px">
+          Software completo pronto para rodar (Executável Binário)
+        </p>
+        <div class="price">R$ 147<span>,90</span></div>
+        <ul class="pricing-features">
+          <li>
+            <i class="fa-solid fa-check"></i> Executável (.exe) Sem Limites de
+            Uso
+          </li>
+          <li>
+            <i class="fa-solid fa-check"></i> Enriquecedor de E-mails e Redes
+            Sociais
+          </li>
+          <li>
+            <i class="fa-solid fa-check"></i> Saídas Profissionais em Excel, CSV
+            e HTML
+          </li>
+          <li><i class="fa-solid fa-check"></i> Manual de Operação Incluso</li>
+          <li>
+            <i class="fa-solid fa-check"></i> Atualização Automatizada de
+            Drivers
+          </li>
+        </ul>
+        <button
+          class="btn-primary"
+          style="width: 100%; justify-content: center"
+          id="buy-btn"
+          onclick="window.location.href = 'https://pay.hotmart.com/T106702644O'"
+        >
+          <i class="fa-solid fa-cart-shopping"></i> Adquirir Licença Comercial
+        </button>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+      <p>
+        &copy; 2026 ThetaMax. Todos os direitos reservados. Soluções de
+        Automação Comercial.
+      </p>
+    </footer>
+
+    <!-- Scripts de Terceiros via CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <script src="https://unpkg.com/scrollreveal"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
+
+    <script>
+      // 1. THREE.JS - Background de Partículas
+      const container = document.getElementById("canvas-container");
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(
+        75,
+        window.innerWidth / window.innerHeight,
+        0.1,
+        1000,
+      );
+      const renderer = new THREE.WebGLRenderer({ alpha: true });
+
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      container.appendChild(renderer.domElement);
+
+      const geometry = new THREE.BufferGeometry();
+      const vertices = [];
+      for (let i = 0; i < 400; i++) {
+        vertices.push(THREE.MathUtils.randFloatSpread(2000));
+        vertices.push(THREE.MathUtils.randFloatSpread(2000));
+        vertices.push(THREE.MathUtils.randFloatSpread(2000));
+      }
+      geometry.setAttribute(
+        "position",
+        new THREE.Float32BufferAttribute(vertices, 3),
+      );
+
+      const material = new THREE.PointsMaterial({
+        color: 0x34a5d9,
+        size: 4,
+        transparent: true,
+        opacity: 0.4,
+      });
+      const particles = new THREE.Points(geometry, material);
+      scene.add(particles);
+      camera.position.z = 500;
+
+      function animate3D() {
+        requestAnimationFrame(animate3D);
+        particles.rotation.x += 0.0003;
+        particles.rotation.y += 0.0005;
+        renderer.render(scene, camera);
+      }
+      animate3D();
+
+      window.addEventListener("resize", () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+      });
+
+      // 2. SCROLLREVEAL
+      const sr = ScrollReveal({
+        origin: "bottom",
+        distance: "50px",
+        duration: 1000,
+        delay: 200,
+        reset: false,
+      });
+
+      sr.reveal(".hero-content", { origin: "left" });
+      sr.reveal(".hero-image-wrapper", { origin: "right", delay: 400 });
+      sr.reveal(".feature-card", { interval: 150 });
+      sr.reveal(".pricing-box", { scale: 0.9, duration: 1200 });
+
+      // 3. SWIPER.JS
+      const swiper = new Swiper(".mySwiper", {
+        loop: true,
+        autoplay: {
+          delay: 4000,
+          disableOnInteraction: false,
+        },
+        pagination: {
+          el: ".swiper-pagination",
+          clickable: true,
+        },
+      });
+
+      // 4. ANIME.JS
+      const buyBtn = document.getElementById("buy-btn");
+      buyBtn.addEventListener("mouseenter", () => {
+        anime({
+          targets: "#buy-btn",
+          scale: 1.03,
+          duration: 300,
+          easing: "easeOutQuad",
+        });
+      });
+      buyBtn.addEventListener("mouseleave", () => {
+        anime({
+          targets: "#buy-btn",
+          scale: 1.0,
+          duration: 300,
+          easing: "easeOutQuad",
+        });
+      });
+
+      anime({
+        targets: "#product-hero-img",
+        translateY: [-10, 10],
+        duration: 3000,
+        direction: "alternate",
+        loop: true,
+        easing: "easeInOutSine",
+      });
+    </script>
+  </body>
+</html>
